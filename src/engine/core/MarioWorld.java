@@ -174,17 +174,21 @@ public class MarioWorld {
     public void win() {
         this.addEvent(EventType.WIN, 0);
         this.gameStatus = GameStatus.WIN;
+        
+        //System.out.println(this.mario.alive);
     }
 
     public void lose() {
         this.addEvent(EventType.LOSE, 0);
         this.gameStatus = GameStatus.LOSE;
         this.mario.alive = false;
+        //System.out.println(this.mario.alive);
     }
 
     public void timeout() {
         this.gameStatus = GameStatus.TIME_OUT;
-        this.mario.alive = false;
+        //this.mario.alive = false;
+        //System.out.println(this.mario.alive);
     }
 
     public int[][] getSceneObservation(float centerX, float centerY, int detail) {
@@ -292,6 +296,7 @@ public class MarioWorld {
 
     public void update(boolean[] actions) {
         if (this.gameStatus != GameStatus.RUNNING) {
+            
             return;
         }
         if (this.pauseTimer > 0) {

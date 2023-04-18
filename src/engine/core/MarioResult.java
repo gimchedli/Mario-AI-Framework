@@ -43,6 +43,14 @@ public class MarioResult {
     }
 
     /**
+     * Get distnace traversed 
+     * @return 
+     */
+    public float getDistanceTraversed() {
+        return this.world.mario.x;
+    }
+
+    /**
      * Get the remaining time before the game timesout
      *
      * @return the number of time ticks before timeout each frame removes 30 frames
@@ -288,6 +296,10 @@ public class MarioResult {
      */
     public int getCurrentLives() {
         return this.world.lives;
+    }
+
+    public boolean aliveOrDead() {
+        return this.world.mario.alive;
     }
 
     /**

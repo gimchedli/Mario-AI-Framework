@@ -278,7 +278,8 @@ public class MarioGame {
                     break;
                 }
             }
-        }
+        } 
+        //this.window.dispose();
         return new MarioResult(this.world, gameEvents, agentEvents);
     }
 }
