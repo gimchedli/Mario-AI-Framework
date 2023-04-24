@@ -1,30 +1,46 @@
 package agents.GandP;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 
 import engine.core.MarioForwardModel;
 import engine.core.MarioTimer;
 import engine.helper.GameStatus;
 
-public class AStarTree {
-    public SearchNode bestPosition;
-    public SearchNode furthestPosition;
-    float currentSearchStartingMarioXPos;
+public class NewDStarLite {
+
+    private PriorityQueue<SearchNode> U;
+    //private List<SearchNode> path;
     ArrayList<SearchNode> posPool;
     ArrayList<int[]> visitedStates = new ArrayList<int[]>();
+    
+    float currentSearchStartingMarioXPos;
+    public SearchNode bestPosition;
+    public SearchNode furthestPosition;
     private boolean requireReplanning = false;
 
     private ArrayList<boolean[]> currentActionPlan;
     int ticksBeforeReplanning = 0;
 
+    private int k;
+    private SearchNode s_goal;
+    private SearchNode s_start;
+    private int maxSteps;
+    private double k_m;
 
-    /*
-    possibly looks at all vertixes from current position, using one action or two ticks and adds all of those to a arraylist (priority queue???)
-    */
+    public NewDStarLite(){
+        maxSteps = 176;
+
+
+    }
+
     private MarioForwardModel search(MarioTimer timer) {
         SearchNode current = bestPosition;
         boolean currentGood = false;
         int maxRight = 176;
+
+        //This is possibly the main part of A* star algotithm TODO: implement rhs values and change algorithm so it looks from goal node to start node.
         while (posPool.size() != 0
                 && ((bestPosition.sceneSnapshot.getMarioFloatPos()[0] - currentSearchStartingMarioXPos < maxRight) || !currentGood)
                 && timer.getRemainingTime() > 0) {
@@ -68,6 +84,7 @@ public class AStarTree {
         return current.sceneSnapshot;
     }
 
+
     private void startSearch(MarioForwardModel model, int repetitions) {
         SearchNode startPos = new SearchNode(null, repetitions, null);
         startPos.initializeRoot(model);
@@ -80,6 +97,41 @@ public class AStarTree {
         bestPosition = startPos;
         furthestPosition = startPos;
     }
+
+
+    private SearchNode pickBestPos(ArrayList<SearchNode> posPool) {
+        SearchNode bestPos = null;
+        float bestPosCost = 10000000;
+        for (SearchNode current : posPool) {
+            float currentCost = current.getRemainingTime() + current.timeElapsed * 0.90f; // slightly bias towards furthest positions
+            if (currentCost < bestPosCost) {
+                bestPos = current;
+                bestPosCost = currentCost;
+            }
+        }
+        posPool.remove(bestPos);
+        return bestPos;
+    }
+
+
+    private void visited(int x, int y, int t) {
+        visitedStates.add(new int[]{x, y, t});
+    }
+
+
+    private boolean isInVisited(int x, int y, int t) {
+        int timeDiff = 5;
+        int xDiff = 2;
+        int yDiff = 2;
+        for (int[] v : visitedStates) {
+            if (Math.abs(v[0] - x) < xDiff && Math.abs(v[1] - y) < yDiff && Math.abs(v[2] - t) < timeDiff
+                    && t >= v[2]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     private ArrayList<boolean[]> extractPlan() {
         ArrayList<boolean[]> actions = new ArrayList<boolean[]>();
@@ -103,24 +155,7 @@ public class AStarTree {
         }
         return actions;
     }
-
-
-    /*
-    look at priority queue and select vertex with lowest cost. Assign this value to currentCost until loop is finished. Update bestPosCost when needed. 
-    */
-    private SearchNode pickBestPos(ArrayList<SearchNode> posPool) {
-        SearchNode bestPos = null;
-        float bestPosCost = 10000000;
-        for (SearchNode current : posPool) {
-            float currentCost = current.getRemainingTime() + current.timeElapsed * 0.90f; // slightly bias towards furthest positions
-            if (currentCost < bestPosCost) {
-                bestPos = current;
-                bestPosCost = currentCost;
-            }
-        }
-        posPool.remove(bestPos);
-        return bestPos;
-    }
+    
 
     public boolean[] optimise(MarioForwardModel model, MarioTimer timer) {
         int planAhead = 2;
@@ -153,21 +188,12 @@ public class AStarTree {
         return action;
     }
 
-    private void visited(int x, int y, int t) {
-        visitedStates.add(new int[]{x, y, t});
+
+
+    public static void main(String[] args) {
+        
     }
 
-    private boolean isInVisited(int x, int y, int t) {
-        int timeDiff = 5;
-        int xDiff = 2;
-        int yDiff = 2;
-        for (int[] v : visitedStates) {
-            if (Math.abs(v[0] - x) < xDiff && Math.abs(v[1] - y) < yDiff && Math.abs(v[2] - t) < timeDiff
-                    && t >= v[2]) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 
 }

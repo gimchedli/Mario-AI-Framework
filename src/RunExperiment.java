@@ -2,25 +2,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import engine.core.MarioAgent;
 import engine.core.MarioGame;
 import engine.core.MarioResult;
-
-//import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-//import java.io.IOException;
-//import java.util.ArrayList;
-//import java.util.List;
 
-//import javax.naming.spi.DirStateFactory.Result;
-//import javax.swing.JFrame;
 
 import com.opencsv.CSVWriter;
 
-//import java.io.Writer;
-//import java.nio.file.Files;
-//import java.nio.file.Paths;
-//import java.io.IOException;
+
 
 
 public class RunExperiment {
@@ -78,11 +69,6 @@ public class RunExperiment {
     }
 
 
-
-    
-
-
-
     public static String getLevel(String filepath) {
         String content = "";
         try {
@@ -92,22 +78,28 @@ public class RunExperiment {
         return content;
     }
 
+
+    public static MarioAgent getCurrentAgent(MarioAgent agent){
+        return agent;
+
+    }
+
     public static void main(String[] args) throws Exception{
         MarioGame game = new MarioGame();
-        // printResults(game.playGame(getLevel("../levels/original/lvl-1.txt"), 200, 0));
-        // printResults(game.runGame(new agents.robinBaumgarten.Agent(), getLevel("./levels/original/lvl-1.txt"), 20, 0, true));        // THIS IS A STAR
-        // printResults(game.runGame(new agents.andySloane.Agent(), getLevel("./levels/ge/lvl-21.txt"), 20, 0, true));                  //  THIS IS TBA STAR
-        // printResults(game.runGame(new agents.sergeyKarakovskiy.Agent(), getLevel("./levels/ge/lvl-21.txt"), 20, 0, true));           // THIS IS JUST JUMPING FORWARD
 
-        // printResults(game.runGame(new agents.sergeyPolikarpov.Agent(), getLevel("./levels/ge/lvl-21.txt"), 20, 0, true));  ?????????
+        //You can choose the agent you want to test as well as maximum time per lvl and generated lvl types from here
+        MarioAgent currentAgent = new agents.robinBaumgarten.Agent();
+        String generatedMapString = "ge";
+        int inputTime = 20;
 
-        // printResults(game.runGame(new agents.spencerSchumann.Agent(), getLevel("./levels/ge/lvl-21.txt"), 20, 0, true));
-
-        String testingagent = "andySloane"; // this will be the name of the generated csv file that contains ressults
-        int inputTime = 240;
+        String str = String.valueOf(currentAgent);
+        String[] arrOfStr = str.split("\\.", 3);       
+        String testingagent = arrOfStr[1] + "_new"; // this will be the name of the generated csv file that contains ressults
+           
+        // TODO: Figure out how to check if directory and file exsists
         
+        File file = new File("output/full_runs/" + generatedMapString + "/" + Integer.toString(inputTime) + "/" + testingagent + ".csv");
 
-        File file = new File("output/full_runs/" + Integer.toString(inputTime) + "/" + testingagent + ".csv");
             // create FileWriter object with file as parameter
         FileWriter outputfile = new FileWriter(file);
 
@@ -119,34 +111,23 @@ public class RunExperiment {
             
         writer.writeNext(header);
 
+        
 
-        for(int i = 1; i < 1001; i++) {
-            String temp = "./levels/ge/lvl-" + Integer.toString(i) + ".txt" ;
+
+        for(int i = 1; i < 4; i++) {
+            String temp = "./levels/" + generatedMapString + "/lvl-" + Integer.toString(i) + ".txt" ;
             
             
             for(int j = 0; j < 3; j++){
-                /*
-                for (int k = 0; k < 6; k++){
-                    writer.writeNext(writeDataLineByLine(file, game.runGame(new agents.robinBaumgarten.Agent(), getLevel(temp), 20, j, true), 
-                    "notch/LVL-" + Integer.toString(i) + ".txt" , j));
-                }**/
-                
-                writer.writeNext(writeDataLineByLine(file, game.runGame(new agents.andySloane.Agent(), getLevel(temp), inputTime, j, false), 
-                "ge/LVL-" + Integer.toString(i) + ".txt" , j));
-                //writer.close();              
+ 
+                writer.writeNext(writeDataLineByLine(file, game.runGame(currentAgent, getLevel(temp), inputTime, j, false), 
+                generatedMapString + "LVL-" + Integer.toString(i) + ".txt" , j));            
             }
             System.out.println("Comleted level " + i);
             
-            //printResults(game.runGame(new agents.robinBaumgarten.Agent(), getLevel(temp), 20, 2, true));
            
         } 
-        //writer.writeNext(writeDataLineByLine(file, game.runGame(new agents.robinBaumgarten.Agent(), getLevel("./levels/ge/lvl-" + Integer.toString(60) + ".txt"), 20, 2, true), 
-        //        "GE/LVL-" + Integer.toString(60) + ".txt" , 2)); 
         writer.close();
-
-
-        // printResults(game.runGame(new agents.trondEllingsen.Agent(), getLevel("./levels/original/lvl-1.txt"), 20, 0, true));
-
     }
     
 }

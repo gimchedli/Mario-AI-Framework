@@ -1,12 +1,34 @@
+/*
 package agents.GandP;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
 
 import engine.core.MarioForwardModel;
 import engine.core.MarioTimer;
 import engine.helper.GameStatus;
 
-public class AStarTree {
+public class DStarLiteGraph {
+
+    private PriorityQueue U = new PriorityQueue<>();
+    private double k_m;
+
+    private SearchNode s_start;
+    private State s_goal;
+	private State s_last;
+
+	private List<State> path = new ArrayList<State>();
+	private double C1;
+	
+	private int maxSteps;
+	private PriorityQueue<State>		openList = new PriorityQueue<State>();
+	//Change back to private****
+	public HashMap<State, CellInfo>	cellHash = new HashMap<State, CellInfo>();
+	private HashMap<State, Float>		openHash = new HashMap<State, Float>();
+
+    
     public SearchNode bestPosition;
     public SearchNode furthestPosition;
     float currentSearchStartingMarioXPos;
@@ -16,11 +38,9 @@ public class AStarTree {
 
     private ArrayList<boolean[]> currentActionPlan;
     int ticksBeforeReplanning = 0;
+    
 
 
-    /*
-    possibly looks at all vertixes from current position, using one action or two ticks and adds all of those to a arraylist (priority queue???)
-    */
     private MarioForwardModel search(MarioTimer timer) {
         SearchNode current = bestPosition;
         boolean currentGood = false;
@@ -68,18 +88,8 @@ public class AStarTree {
         return current.sceneSnapshot;
     }
 
-    private void startSearch(MarioForwardModel model, int repetitions) {
-        SearchNode startPos = new SearchNode(null, repetitions, null);
-        startPos.initializeRoot(model);
 
-        posPool = new ArrayList<SearchNode>();
-        visitedStates.clear();
-        posPool.addAll(startPos.generateChildren());
-        currentSearchStartingMarioXPos = model.getMarioFloatPos()[0];
 
-        bestPosition = startPos;
-        furthestPosition = startPos;
-    }
 
     private ArrayList<boolean[]> extractPlan() {
         ArrayList<boolean[]> actions = new ArrayList<boolean[]>();
@@ -104,10 +114,6 @@ public class AStarTree {
         return actions;
     }
 
-
-    /*
-    look at priority queue and select vertex with lowest cost. Assign this value to currentCost until loop is finished. Update bestPosCost when needed. 
-    */
     private SearchNode pickBestPos(ArrayList<SearchNode> posPool) {
         SearchNode bestPos = null;
         float bestPosCost = 10000000;
@@ -170,4 +176,28 @@ public class AStarTree {
         return false;
     }
 
+    public void initialize() {
+
+        int k = 0;
+        for(int i = 0; i < 5; i++){
+
+        }
+
+    }
+
+    public void updateNode() {
+
+    }
+
+
+    public void computeShortestPath() {
+
+    }
+
+
+    public static void main(String[] args) {
+        
+    }
+    
 }
+*/
