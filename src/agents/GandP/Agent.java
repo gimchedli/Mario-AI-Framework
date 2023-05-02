@@ -10,11 +10,13 @@ import engine.helper.MarioActions;
  */
 public class Agent implements MarioAgent {
     private boolean[] action;
+    //private NewDStarLite tree;
     private AStarTree tree;
 
     @Override
     public void initialize(MarioForwardModel model, MarioTimer timer) {
         this.action = new boolean[MarioActions.numberOfActions()];
+        //this.tree = new NewDStarLite();
         this.tree = new AStarTree();
     }
 

@@ -39,6 +39,7 @@ public class MarioResult {
      * @return value between 0 to 1 to indicate the percentage of distance traversed
      */
     public float getCompletionPercentage() {
+        //System.out.println(this.world.level.exitTileX );
         return this.world.mario.x / (this.world.level.exitTileX * 16);
     }
 

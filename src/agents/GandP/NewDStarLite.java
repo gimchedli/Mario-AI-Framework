@@ -14,7 +14,7 @@ public class NewDStarLite {
     //private List<SearchNode> path;
     ArrayList<SearchNode> posPool;
     ArrayList<int[]> visitedStates = new ArrayList<int[]>();
-    
+
     float currentSearchStartingMarioXPos;
     public SearchNode bestPosition;
     public SearchNode furthestPosition;
@@ -39,6 +39,9 @@ public class NewDStarLite {
         SearchNode current = bestPosition;
         boolean currentGood = false;
         int maxRight = 176;
+        //float maxRight = current.sceneSnapshot.getCurrentGoal();
+
+        System.out.println(current.sceneSnapshot.getCurrentGoal());
 
         //This is possibly the main part of A* star algotithm TODO: implement rhs values and change algorithm so it looks from goal node to start node.
         while (posPool.size() != 0
@@ -100,10 +103,22 @@ public class NewDStarLite {
 
 
     private SearchNode pickBestPos(ArrayList<SearchNode> posPool) {
+        
         SearchNode bestPos = null;
         float bestPosCost = 10000000;
+
+        /*
+        SearchNode pred = null;
+        SearchNode succ = null;
+        for (int i = 1; i < posPool.size(); i++) {
+            float current_g = posPool.get(i-1).getRemainingTime() + posPool.get(i-1).timeElapsed * 0.90f;
+            float current_rhs = 0;
+
+        }*/
+
         for (SearchNode current : posPool) {
             float currentCost = current.getRemainingTime() + current.timeElapsed * 0.90f; // slightly bias towards furthest positions
+            
             if (currentCost < bestPosCost) {
                 bestPos = current;
                 bestPosCost = currentCost;
@@ -190,9 +205,6 @@ public class NewDStarLite {
 
 
 
-    public static void main(String[] args) {
-        
-    }
 
 
 

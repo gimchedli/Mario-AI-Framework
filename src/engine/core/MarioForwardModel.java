@@ -323,6 +323,31 @@ public class MarioForwardModel {
         return new float[]{this.world.mario.x, this.world.mario.y};
     }
 
+
+
+    /**
+     * return current goal
+     * @return
+     */
+
+    public float getCurrentGoal() {
+
+        /*
+        float temp = this.world.mario.x + (MarioGame.width / 2);
+        
+
+        if (temp >= this.world.level.exitTileX * 16) {
+            return this.world.level.exitTileX * 16;
+        } else {
+            return temp; 
+        } 
+        */
+        
+        return (MarioGame.width / 2);
+
+    }
+
+
     /**
      * Get mario velocity
      *
@@ -599,6 +624,15 @@ public class MarioForwardModel {
      */
     public int[][] getScreenSceneObservation(int detail) {
         return this.world.getSceneObservation(this.world.cameraX + MarioGame.width / 2, MarioGame.height / 2, detail);
+    }
+
+
+    /**
+     * Get right border of the screen at current point in time.
+     * @return
+     */
+    public float getRightBorder() {
+        return 0;//this.world.getMarioFloatPos()[0] + MarioGame.width / 2;
     }
 
     /**

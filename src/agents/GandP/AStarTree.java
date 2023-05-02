@@ -113,12 +113,14 @@ public class AStarTree {
         float bestPosCost = 10000000;
         for (SearchNode current : posPool) {
             float currentCost = current.getRemainingTime() + current.timeElapsed * 0.90f; // slightly bias towards furthest positions
+            //System.out.println(currentCost + " " + current.getRemainingTime() + " " + current.timeElapsed);
             if (currentCost < bestPosCost) {
                 bestPos = current;
                 bestPosCost = currentCost;
             }
         }
         posPool.remove(bestPos);
+        //System.out.println(bestPosCost);
         return bestPos;
     }
 

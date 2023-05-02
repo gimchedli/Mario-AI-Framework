@@ -85,10 +85,11 @@ public class RunExperiment {
     }
 
     public static void main(String[] args) throws Exception{
+        long startTime = System.nanoTime();
         MarioGame game = new MarioGame();
 
         //You can choose the agent you want to test as well as maximum time per lvl and generated lvl types from here
-        MarioAgent currentAgent = new agents.robinBaumgarten.Agent();
+        MarioAgent currentAgent = new agents.GandP.Agent();
         String generatedMapString = "ge";
         int inputTime = 20;
 
@@ -114,20 +115,25 @@ public class RunExperiment {
         
 
 
-        for(int i = 1; i < 4; i++) {
-            String temp = "./levels/" + generatedMapString + "/lvl-" + Integer.toString(i) + ".txt" ;
+        for(int i = 1; i < 10; i++) {
+            String temp = "./levels/" + generatedMapString + "/lvl-" + Integer.toString(3) + ".txt" ;
             
             
             for(int j = 0; j < 3; j++){
  
                 writer.writeNext(writeDataLineByLine(file, game.runGame(currentAgent, getLevel(temp), inputTime, j, false), 
-                generatedMapString + "LVL-" + Integer.toString(i) + ".txt" , j));            
+                generatedMapString + "LVL-" + Integer.toString(3) + ".txt" , j));            
             }
-            System.out.println("Comleted level " + i);
+            System.out.println("Completed level " + 3);
             
            
         } 
         writer.close();
+
+        long endTime   = System.nanoTime();
+        long totalTime = endTime - startTime;
+
+        System.out.println(totalTime/1000000000);
     }
     
 }
