@@ -332,18 +332,13 @@ public class MarioForwardModel {
 
     public float getCurrentGoal() {
 
-        /*
-        float temp = this.world.mario.x + (MarioGame.width / 2);
-        
+        float tempGoal = this.world.mario.x + (MarioGame.width / 2);
 
-        if (temp >= this.world.level.exitTileX * 16) {
-            return this.world.level.exitTileX * 16;
-        } else {
-            return temp; 
-        } 
-        */
+        if (tempGoal >= this.world.level.exitTileX){
+            tempGoal = this.world.level.exitTileX;
+        }
         
-        return (MarioGame.width / 2);
+        return tempGoal;
 
     }
 

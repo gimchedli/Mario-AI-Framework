@@ -1,7 +1,5 @@
 package agents.DStarFromScratch;
 
-
-
 import engine.core.MarioAgent;
 import engine.core.MarioForwardModel;
 import engine.core.MarioTimer;
@@ -24,7 +22,10 @@ public class Agent implements MarioAgent {
 
     @Override
     public boolean[] getActions(MarioForwardModel model, MarioTimer timer) {
-        action = this.tree.runMarioRun(this.tree);
+        
+        action = this.tree.runMarioRun(model);
+        action[MarioActions.SPEED.getValue()] = action[MarioActions.JUMP.getValue()] = model.mayMarioJump() || !model.isMarioOnGround();
+
         return action;
     }
 
