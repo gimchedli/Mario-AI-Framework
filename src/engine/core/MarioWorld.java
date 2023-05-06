@@ -531,4 +531,8 @@ public class MarioWorld {
             this.effects.get(i).render(og, cameraX, cameraY);
         }
     }
+
+    public int[] getMarioFloatPos() {
+        return null;
+    }
 }

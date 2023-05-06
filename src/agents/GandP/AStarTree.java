@@ -21,6 +21,7 @@ public class AStarTree {
     /*
     possibly looks at all vertixes from current position, using one action or two ticks and adds all of those to a arraylist (priority queue???)
     */
+    
     private MarioForwardModel search(MarioTimer timer) {
         SearchNode current = bestPosition;
         boolean currentGood = false;
