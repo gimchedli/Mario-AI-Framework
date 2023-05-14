@@ -1,5 +1,5 @@
 <p align="center">
-<h3 id="How to Run Experiment">How To Use</h3>
+<h3 id="How to Run Experiment">How to Run Experiment</h3>
 
 
 
