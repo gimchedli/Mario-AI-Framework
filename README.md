@@ -2,6 +2,7 @@
 <h3 id="How to Run Experiment">How to Run Experiment</h3>
 Clone the repository. Afterwards you can run "RunExperiment.java" to generate results. If you inspect the "RunExperiment.java" file you can see where you can change input variables, to generate results for different agents and generated levels. (Note: DStarLite Agent is not working at this point).
 
+------
 
 <a href="#features">Features</a> &mdash; <a href="#use">How To Use</a> &mdash; <a href="#papers">Related Papers</a> &mdash; <a href="#missing">Missing Features</a> &mdash; <a href="#copyrights">Copyrights</a>
 </p>
