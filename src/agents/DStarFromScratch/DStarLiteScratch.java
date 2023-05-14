@@ -206,36 +206,6 @@ public class DStarLiteScratch {
 	 * 8-way graph this list contains all of a Points neighbours. Unless
 	 * the Point is occupied, in which case it has no successors.
 	 */
-	private LinkedList<Node> getSucc(Node u)
-	{
-		LinkedList<Node> s = new LinkedList<Node>();
-		Node tempNode;
-
-		if (occupied(u)) return s;
-
-		ArrayList<boolean[]> possibleActions = u.setPossibleActions(u);
-		if (u.isLeafNode()) {
-            possibleActions.clear();
-        }
-
-		//this.mario = u.sceneSnapshot.clone();
-		u.sceneSnapshot = this.mario.clone();
-
-		for (int i = 0; i < 5; i++) {
-			boolean[] action = createAction(false, false, false, false, false);
-			action[i] = true;
-			System.out.println(u.sceneSnapshot.getMarioFloatPos()[0] + " " + u.sceneSnapshot.getMarioFloatPos()[1]);
-			for (int j = 0; j<1; j++) {
-				u.sceneSnapshot.advance(action);
-			}
-			System.out.println(u.sceneSnapshot.getMarioFloatPos()[0] + " " + u.sceneSnapshot.getMarioFloatPos()[1]);
-			tempNode = new Node(u.sceneSnapshot.getMarioFloatPos()[0], u.sceneSnapshot.getMarioFloatPos()[1],
-			new Pair<>(-1.0, -1.0));
-			tempNode.setPosAction(action);
-			s.addFirst(tempNode);
-		}
-		return s;
-	}
 
 	private LinkedList<Node> getSucc(Node u, MarioForwardModel model)
 	{
@@ -248,21 +218,38 @@ public class DStarLiteScratch {
 		if (u.isLeafNode()) {
             possibleActions.clear();
         }
+		
+		//move right only
 		MarioForwardModel tempModel = model.clone();
-
-		for (int i = 0; i < 5; i++) {
-			boolean[] action = createAction(false, false, false, false, false);
-			action[i] = true;
-			
-			for (int j = 0; j<1; j++) {
-				tempModel.advance(action);
-			}
-			
-			tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
+		boolean[] action = createAction(false, true, false, false, false);
+		tempModel.advance(action);
+		tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
 			new Pair<>(-1.0, -1.0));
-			tempNode.setPosAction(action);
-			s.addFirst(tempNode);
-		}
+		tempNode.setPosAction(action);
+		
+		if (!occupied(tempNode)) s.addFirst(tempNode);
+
+		//move left only
+		tempModel = model.clone();
+		action = createAction(true, false, false, false, false);
+		tempModel.advance(action);
+		tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
+			new Pair<>(-1.0, -1.0));
+		tempNode.setPosAction(action);
+		if (!occupied(tempNode)) s.addFirst(tempNode);
+
+		//move right and jump
+		tempModel = model.clone();
+		//action = action[MarioActions.SPEED.getValue()] = action[MarioActions.JUMP.getValue()] = model.mayMarioJump() || !model.isMarioOnGround();
+        action[MarioActions.SPEED.getValue()] = action[MarioActions.JUMP.getValue()] = model.mayMarioJump() || !model.isMarioOnGround();
+		tempModel.advance(action);
+		tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
+			new Pair<>(-1.0, -1.0));
+		tempNode.setPosAction(action);
+		//System.out.println(tempModel.getMarioFloatPos()[0] + " " + model.getMarioFloatPos()[0]);
+		if (!occupied(tempNode)) s.addFirst(tempNode);
+
+		
 		return s;
 	}
 
@@ -273,45 +260,39 @@ public class DStarLiteScratch {
 	 * 
 	 * TODO: change this to mario actions
 	 */
-	private LinkedList<Node> getPred(Node u)
-	{
-		LinkedList<Node> s = new LinkedList<Node>();
-		Node tempNode;
-
-		//this.mario = u.sceneSnapshot.clone();
-		u.sceneSnapshot = this.mario.clone();
-
-		for (int i = 0; i < 5; i++) {
-			boolean[] action = createAction(false, false, false, false, false);
-			action[i] = true;
-			this.mario.advance(action);
-			tempNode = new Node(this.mario.getMarioFloatPos()[0], this.mario.getMarioFloatPos()[1],
-			new Pair<>(-1.0, -1.0));
-			tempNode.setPosAction(action);
-			if (!occupied(tempNode)) s.addFirst(tempNode);
-		}
-		
-
-		return s;
-	}
 
 	private LinkedList<Node> getPred(Node u, MarioForwardModel model)
 	{
 		LinkedList<Node> s = new LinkedList<Node>();
 		Node tempNode;
 
+		//move right only
 		MarioForwardModel tempModel = model.clone();
-
-		for (int i = 0; i < 5; i++) {
-			boolean[] action = createAction(false, false, false, false, false);
-			action[i] = true;
-			tempModel.advance(action);
-			tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
+		boolean[] action = createAction(false, true, false, false, true);
+		tempModel.advance(action);
+		tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
 			new Pair<>(-1.0, -1.0));
-			tempNode.setPosAction(action);
-			if (!occupied(tempNode)) s.addFirst(tempNode);
-		}
-		
+		tempNode.setPosAction(action);
+		if (!occupied(tempNode)) s.addFirst(tempNode);
+
+		//move left only
+		tempModel = model.clone();
+		action = createAction(true, false, false, false, false);
+		tempModel.advance(action);
+		tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
+			new Pair<>(-1.0, -1.0));
+		tempNode.setPosAction(action);
+		if (!occupied(tempNode)) s.addFirst(tempNode);
+
+		//move right and jump
+		tempModel = model.clone();
+        action[MarioActions.SPEED.getValue()] = action[MarioActions.JUMP.getValue()] = model.mayMarioJump() || !model.isMarioOnGround();
+		tempModel.advance(action);
+		tempNode = new Node(tempModel.getMarioFloatPos()[0], tempModel.getMarioFloatPos()[1],
+			new Pair<>(-1.0, -1.0));
+		tempNode.setPosAction(action);
+		if (!occupied(tempNode)) s.addFirst(tempNode);
+
 
 		return s;
 	}
@@ -363,7 +344,8 @@ public class DStarLiteScratch {
 
 		if (xd+yd > 1) scale = M_SQRT2;
 
-		if (pointHash.containsKey(a)==false) return scale; 
+		if (pointHash.containsKey(a)==false) return scale;
+
 		return scale*pointHash.get(a).cost;
 	}
 
@@ -371,24 +353,6 @@ public class DStarLiteScratch {
 	/*
 	 * As per [S. Koenig, 2002]
 	 */
-	private void updateVertex(Node u)
-	{
-		LinkedList<Node> s = new LinkedList<Node>();
-
-		if (u.neq(goal)) {
-			s = getSucc(u);
-			double tmp = Double.POSITIVE_INFINITY;
-			double tmp2;
-
-			for (Node i : s) {
-				tmp2 = getG(i) + cost(u,i);
-				if (tmp2 < tmp) tmp = tmp2;
-			}
-			if (!close(getRHS(u),tmp)) setRHS(u,tmp);
-		}
-
-		if (!close(getG(u),getRHS(u))) insert(u);
-	}
 
 	private void updateVertex(Node u, MarioForwardModel model)
 	{
@@ -400,7 +364,7 @@ public class DStarLiteScratch {
 			double tmp2;
 
 			for (Node i : s) {
-				tmp2 = getG(i) + cost(u,i);
+				tmp2 = getG(i) + cost(u, i);
 				if (tmp2 < tmp) tmp = tmp2;
 			}
 			if (!close(getRHS(u),tmp)) setRHS(u,tmp);
@@ -416,71 +380,7 @@ public class DStarLiteScratch {
 	}
 
 
-
-
-    private void replan() {
-        path.clear();
-		int res = computeShortestPath();
-		
-		if (res < 0)
-		{
-			System.out.println("No Path to Goal");
-			//return false;
-		}
-		
-		LinkedList<Node> n = new LinkedList<Node>();
-		Node cur = start;
-		
-		if (getG(start) == Double.POSITIVE_INFINITY)
-		{
-			System.out.println("No Path to Goal");
-			//return false;
-		}
-		
-		while (cur.neq(goal))
-		{		
-			path.add(cur);
-			n = new LinkedList<Node>();
-			n = getSucc(cur);
-			
-			if (n.isEmpty())
-			{
-				System.out.println("No Path to Goal");
-				//return false;
-			}
-			
-			double cmin = Double.POSITIVE_INFINITY;
-			double tmin = 0;   
-			Node smin = new Node();
-
-			for (Node i : n)
-			{
-				double val  = cost(cur, i);
-				double val2 = trueDist(i, goal) + trueDist(start, i);
-				val += getG(i);
-
-				if (close(val,cmin)) {
-					if (tmin > val2) {
-						tmin = val2;
-						cmin = val;
-						smin = i;
-					}
-				} else if (val < cmin) {
-					tmin = val2;
-					cmin = val;
-					smin = i;
-				}
-			}
-			n.clear();
-			cur = new Node(smin);
-			//cur = smin;			
-		}	
-		path.add(goal);
-		//return true;
-    }
-
-
-	private void replan(MarioForwardModel model) {
+	public void replan(MarioForwardModel model) {
         path.clear();
 		int res = computeShortestPath(model);
 		
@@ -498,6 +398,8 @@ public class DStarLiteScratch {
 			System.out.println("No Path to Goal");
 			//return false;
 		}
+
+		
 		
 		while (cur.neq(goal))
 		{		
@@ -510,18 +412,29 @@ public class DStarLiteScratch {
 				System.out.println("No Path to Goal");
 				//return false;
 			}
-			
+			System.out.println(n.size());
+
 			double cmin = Double.POSITIVE_INFINITY;
 			double tmin = 0;   
 			Node smin = new Node();
 
+			//System.out.println(smin + " " +smin.x + " " + smin.y);
+			//System.out.println(path.size());
+			//System.out.println(cur.neq(goal));
+
+			int l = 0;
+
 			for (Node i : n)
 			{
+				l++;
 				double val  = cost(cur, i);
 				double val2 = trueDist(i, goal) + trueDist(start, i);
 				val += getG(i);
+				System.out.println(i + " " + i.x + " " + i.y + " - " + cost(cur,i) + "  goal: " + goal.x + " " + goal.y + " taken action: " + i.getPosAction());
+			
+				System.out.println(val + " " + cmin);
 
-				if (close(val,cmin)) {
+				if (close(val, cmin)) {
 					if (tmin > val2) {
 						tmin = val2;
 						cmin = val;
@@ -532,10 +445,14 @@ public class DStarLiteScratch {
 					cmin = val;
 					smin = i;
 				}
+				
 			}
+			//System.out.println(cur+ " " +cur.x + " " + cur.y + " action" + cur.getPosAction());
 			n.clear();
 			cur = new Node(smin);
-			//cur = smin;			
+			//cur = smin;
+			//System.out.println(cur+ " " +cur.x + " " + cur.y + " action" + cur.getPosAction());
+			System.out.println("________");			
 		}	
 		path.add(goal);
 		//System.out.println(check++);
@@ -547,7 +464,8 @@ public class DStarLiteScratch {
 	 *    because this algorithm can plan forever if the start is surrounded  by obstacles
 	 * 2. We lazily remove Nodes from the open list so we never have to iterate through it.
 	 */
-	private int computeShortestPath()
+
+	public int computeShortestPath(MarioForwardModel model)
 	{
 		LinkedList<Node> s = new LinkedList<Node>();
 
@@ -584,63 +502,7 @@ public class DStarLiteScratch {
 			if (k_old.lt(calculateKey(u))) { //u is out of date
 				insert(u);
 			} else if (getG(u) > getRHS(u)) { //needs update (got better)
-				setG(u,getRHS(u));
-				s = getPred(u);
-				for (Node i : s) {
-					updateVertex(i);
-				}
-			} else {						 // g <= rhs, Node has got worse
-				setG(u, Double.POSITIVE_INFINITY);
-				s = getPred(u);
-
-				for (Node i : s) {
-					updateVertex(i);
-				}
-				updateVertex(u);
-			}
-		} //while
-		return 0;
-	}
-
-
-	private int computeShortestPath(MarioForwardModel model)
-	{
-		LinkedList<Node> s = new LinkedList<Node>();
-
-		if (openList.isEmpty()) return 1;
-
-		int k=0;
-		while ((!openList.isEmpty()) &&
-			   (openList.peek().lt(start = calculateKey(start))) ||
-			   (getRHS(start) != getG(start))) {
-
-			if (k++ > maxSteps) {
-				System.out.println("At maxsteps");
-				return -1;
-			}
-
-			Node u;
-
-			boolean test = (getRHS(start) != getG(start));
-
-			//lazy remove
-			while(true) {
-				if (openList.isEmpty()) return 1;
-				u = openList.poll();
-
-				if (!isValid(u)) continue;
-				if (!(u.lt(start)) && (!test)) return 2;
-				break;
-			}
-
-			openHash.remove(u);
-
-			Node k_old = new Node(u);
-
-			if (k_old.lt(calculateKey(u))) { //u is out of date
-				insert(u);
-			} else if (getG(u) > getRHS(u)) { //needs update (got better)
-				setG(u,getRHS(u));
+				setG(u, getRHS(u));
 				s = getPred(u, model);
 				for (Node i : s) {
 					updateVertex(i, model);
@@ -681,7 +543,7 @@ public class DStarLiteScratch {
 	 * too much. Also, it frees up a good deal of memory we are probably not
 	 * going to use.
 	 */
-	public void updateGoal(float x, float y)
+	public void updateGoal(float x, float y, MarioForwardModel model)
 	{
 		List<Pair<ipoint2, Double> > toAdd = new ArrayList<Pair<ipoint2, Double> >();
 		Pair<ipoint2, Double> tempPoint;
@@ -723,7 +585,7 @@ public class DStarLiteScratch {
 		Iterator<Pair<ipoint2, Double> > iterator = toAdd.iterator();
 		while(iterator.hasNext()) {
 			tempPoint = iterator.next();
-			updatePoint(tempPoint.first().x, tempPoint.first().y, tempPoint.second());
+			updatePoint(tempPoint.first().x, tempPoint.first().y, tempPoint.second(), model);
 		}
 
 
@@ -744,7 +606,7 @@ public class DStarLiteScratch {
     /*
 	 * updatePoint as per [S. Koenig, 2002]
 	 */
-	public void updatePoint(float x, float y, double val)
+	public void updatePoint(float x, float y, double val, MarioForwardModel model)
 	{
 		Node u = new Node();
 		u.x = x;
@@ -754,7 +616,7 @@ public class DStarLiteScratch {
 
 		makeNewPoint(u);
 		pointHash.get(u).cost = val;
-		updateVertex(u);
+		updateVertex(u, model);
 	}
 
 	/*
@@ -797,21 +659,28 @@ public class DStarLiteScratch {
 		
 		tree.replan();
 		*/
-		runPath = createAction(false, true, false, false, false);
+		runPath = createAction(false, true, false, true, true);
+		//runPath[MarioActions.SPEED.getValue()] = runPath[MarioActions.JUMP.getValue()] = model.mayMarioJump() || !model.isMarioOnGround();
+        //MarioForwardModel temp = model.clone();
+		//temp.advance(runPath);
+		//System.out.println(runPath[MarioActions.JUMP.getValue()]);
 		
 		//MarioForwardModel temp = tree.mario.clone();
 		
-		/*
+		
 		init(model.getMarioFloatPos()[0], model.getMarioFloatPos()[1], 
 		model.getCurrentGoal(), model.getMarioFloatPos()[1]);
-		*/
+		
 
 		//model.advance(createAction(false, false, false, false, true));
-		
+		//init(model.getMarioFloatPos()[0], model.getMarioFloatPos()[1], model.getCurrentGoal(),  model.getMarioFloatPos()[1]);
 		//replan(model);
+		//System.out.println(this.getPath());
+
+		/*
 		System.out.println(model.getMarioFloatPos()[0] + " " + model.getMarioFloatPos()[1] 
 		+ " " + model.getCurrentGoal() + " " +  model.getMarioFloatPos()[1]);
-		
+		*/
 		return runPath;
 	}
 
@@ -823,6 +692,7 @@ class PointInfo implements java.io.Serializable
 	public double g=0;
 	public double rhs=0;
 	public double cost=0;
+
 }
 
 class ipoint2

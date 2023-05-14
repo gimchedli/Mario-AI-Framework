@@ -1,4 +1,4 @@
-package agents.GandP;
+package agents.DStarFromScratch;
 
 import java.util.ArrayList;
 
@@ -72,13 +72,13 @@ public class Helper {
         return action;
     }
 
-    public static boolean canJumpHigher(SearchNode node, boolean checkParent) {
-        if (node.parentPos != null && checkParent && canJumpHigher(node.parentPos, false))
+    public static boolean canJumpHigher(MarioNode node, boolean checkParent) {
+        if (node.predMarioNode != null && checkParent && canJumpHigher(node.predMarioNode, false))
             return true;
-        return node.sceneSnapshot.mayMarioJump() || node.sceneSnapshot.getMarioCanJumpHigher();
+        return node.mario.mayMarioJump() || node.mario.getMarioCanJumpHigher();
     }
 
-    public static ArrayList<boolean[]> createPossibleActions(SearchNode node) {
+    public static ArrayList<boolean[]> createPossibleActions(MarioNode node) {
         ArrayList<boolean[]> possibleActions = new ArrayList<boolean[]>();
         // jump
         if (canJumpHigher(node, true))
