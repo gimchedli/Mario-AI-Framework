@@ -24,7 +24,24 @@ public class Agent implements MarioAgent {
     public boolean[] getActions(MarioForwardModel model, MarioTimer timer) {
         
         action = this.tree.runMarioRun(model);
-        action[MarioActions.SPEED.getValue()] = action[MarioActions.JUMP.getValue()] = model.mayMarioJump() || !model.isMarioOnGround();
+        //action[MarioActions.SPEED.getValue()] = action[MarioActions.JUMP.getValue()] = model.mayMarioJump() || !model.isMarioOnGround();
+        //System.out.println(action[MarioActions.JUMP.getValue()]);
+        
+        tree.init(model.getMarioFloatPos()[0], model.getMarioFloatPos()[1], model.getCurrentGoal(),  model.getMarioFloatPos()[1]);
+        tree.computeShortestPath(model);
+
+        
+
+       
+
+        //tree.replan(model);
+        /*
+        for (Node i : tree.getPath())
+		{
+			System.out.println("x: " + i.x + " y: " + i.y);
+		}
+        */
+        //System.out.println(tree.getPath());
 
         return action;
     }

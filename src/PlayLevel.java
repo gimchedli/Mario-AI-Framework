@@ -34,8 +34,8 @@ public class PlayLevel {
     public static void main(String[] args) {
         long startTime = System.nanoTime();
         MarioGame game = new MarioGame();
-        // printResults(game.playGame(getLevel("../levels/original/lvl-1.txt"), 200, 0));
-        printResults(game.runGame(new agents.DStarFromScratch.Agent(), getLevel("./levels/original/lvl-1.txt"), 20, 2, true));
+        //printResults(game.playGame(getLevel("./levels/patternOccur/lvl-4.txt"), 200, 0));
+        printResults(game.runGame(new agents.andySloane.Agent(), getLevel("./levels/patternOccur/lvl-534.txt"), 60, 2, true));
         long endTime   = System.nanoTime();
         long totalTime = endTime - startTime;
 
